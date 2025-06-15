@@ -3,6 +3,8 @@ using Aquality.Selenium.Elements.Interfaces;
 using Aquality.Selenium.Forms;
 using ExampleProject.Framework;
 using OpenQA.Selenium;
+using SeleniumExtras.WaitHelpers;
+using OpenQA.Selenium.Support.UI;
 
 namespace Steam.Framework.Pages
 {
@@ -10,9 +12,15 @@ namespace Steam.Framework.Pages
     {
         private const string PageName = "Steam Search";
         private ILabel TopSellersHeader => ElementFactory.GetLabel(By.XPath(string.Format(LocatorConstants.PartialTextLocator, "Top Sellers")), "Top Sellers Header");
-        private ITextBox PriceRangeSlider => ElementFactory.GetTextBox(By.Id("price_range"), "Price Range Slider");
-        private ICheckBox GetTagCheckBox(string tag) => ElementFactory.GetCheckBox(By.XPath($"//div[@id='TagFilter_Container']//label[contains(text(), '{tag}')]/preceding-sibling::input"), $"Tag: {tag}");
-        private ICheckBox GetOSCheckBox(string os) => ElementFactory.GetCheckBox(By.XPath($"//div[@id='additional_filters']//label[contains(text(), '{os}')]/preceding-sibling::input"), $"OS: {os}");
+        public ILabel PriceRangeDisplay => ElementFactory.GetLabel(By.Id("price_range_display"), "Price Range Display");
+        private ITextBox tagSearch => ElementFactory.GetTextBox(By.Id("TagSuggest"), "Tag Search Box");
+        private IList<ILabel> GenreTagLabels => ElementFactory.FindElements<ILabel>(By.CssSelector("div.searchtag.tag_dynamic > span.label"));
+        private ILabel linuxCheckbox = ElementFactory.GetLabel(By.XPath("//span[contains(@class, 'tab_filter_control_include') and @data-value='linux']"), "Linux Checkbox");
+        private ILink FirstGameLink => ElementFactory.GetLink(By.CssSelector("a.search_result_row:first-child"), "First Game Link");
+        private ILabel FirstGameName => ElementFactory.GetLabel(By.CssSelector("a.search_result_row:first-child span.title"), "First Game Name");
+        private ILabel FirstGameReleaseDate => ElementFactory.GetLabel(By.CssSelector("a.search_result_row:first-child div.search_released"), "First Game Release Date");
+        private ILabel FirstGamePrice => ElementFactory.GetLabel(By.CssSelector("a.search_result_row:first-child div.discount_final_price"), "First Game Price");
+
         public TopSellersPage() : base(By.XPath(string.Format(LocatorConstants.PreciseTextLocator, PageName)), PageName)
         {
         }
@@ -24,28 +32,67 @@ namespace Steam.Framework.Pages
 
         public void SetSliderTo5()
         {
+            var slider = AqualityServices.Browser.Driver.FindElement(By.Id("price_range"));
             var jsExecutor = (IJavaScriptExecutor)AqualityServices.Browser.Driver;
 
+            // Set value to 1 and trigger 'input' and 'change' events
             jsExecutor.ExecuteScript(
-                "arguments[0].value = 5;" +
+                "arguments[0].value = 1;" +
                 "arguments[0].dispatchEvent(new Event('input'));" +
                 "arguments[0].dispatchEvent(new Event('change'));",
-                PriceRangeSlider.GetElement());
+                slider);
         }
 
-        public void ApplyFilters()
+        public bool IsPriceRangeUnderFive()
         {
-            string[] tags = { "Puzzle", "2D", "Fantasy" };
-            string os = "SteamOS + Linux";
+            string actualText = PriceRangeDisplay.Text;
+            return actualText == "Under $5.00";
+        }
 
+        public void SearchForTags(params string[] tags)
+        {
             foreach (var tag in tags)
             {
-                var checkbox = GetTagCheckBox(tag);
-                if (!checkbox.IsChecked) checkbox.Check();
-            }
+                tagSearch.ClearAndType(tag);
 
-            var osCheckbox = GetOSCheckBox(os);
-            if (!osCheckbox.IsChecked) osCheckbox.Check();
+                var checkbox = GetTagCheckboxByDataLoc(tag);
+                if (!checkbox.State.WaitForDisplayed(TimeSpan.FromSeconds(10)))
+                {
+                    throw new TimeoutException($"{tag} checkbox was not displayed within 10 seconds");
+                }
+
+                checkbox.Click();
+            }
+        }
+
+        private ILabel GetTagCheckboxByDataLoc(string tag)
+        {
+            var locator = By.XPath($"//span[contains(@class,'tab_filter_control') and contains(@data-loc,'{tag}')]");
+            return ElementFactory.GetLabel(locator, $"{tag} checkbox");
+        }
+
+        public bool AreGenresDisplayed(params string[] expectedGenres)
+        {
+            var displayedGenres = GenreTagLabels.Select(label => label.Text.Trim()).ToList();
+            return expectedGenres.All(genre => displayedGenres.Contains(genre));
+        }
+
+        public void ClickLinuxCheckbox()
+        {
+            if (!linuxCheckbox.State.IsDisplayed)
+            {
+                throw new NoSuchElementException("Linux checkbox is not displayed on the page");
+            }
+            linuxCheckbox.Click();
+            Thread.Sleep(1000); // Wait for the page to update after clicking the checkbox
+        }
+
+        public string GetFirstGameName() => FirstGameName.Text;
+        public string GetFirstGameReleaseDate() => FirstGameReleaseDate.Text;
+        public string GetFirstGamePrice() => FirstGamePrice.Text;
+        public void ClickFirstGame()
+        {
+            FirstGameLink.Click();
         }
     }
 }

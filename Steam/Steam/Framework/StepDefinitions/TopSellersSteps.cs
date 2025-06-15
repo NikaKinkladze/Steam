@@ -19,16 +19,41 @@ namespace Steam.Framework.StepDefinitions
             Assert.That(topSellersPage.IsTopSellersHeaderPresent(), Is.True, "Top Sellers header is not present on the page");
         }
 
-        [When(@"I set the price range slider to 5")]
+        [When(@"I set the price range slider to 5 dollars")]
         public void WhenISetThePriceRangeSliderTo5()
         {
             topSellersPage.SetSliderTo5();
         }
 
-        [When(@"I apply filters")]
-        public void WhenIApplyFilters()
+        [Then(@"Price is set under 5 dollars")]
+        public void ThenPriceIsSetUnder5()
         {
-            topSellersPage.ApplyFilters();
+            Assert.That(topSellersPage.IsPriceRangeUnderFive(), Is.True, "Price range should be set to 'Under $5.00'");
+        }
+
+        [When(@"I apply genres")]
+        public void WhenIApplyTags()
+        {
+            topSellersPage.SearchForTags("Puzzle", "2D", "Fantasy");
+        }
+
+        [Then(@"I should see the genres on the page")]
+        public void ThenIShouldSeeTheGenresOnThePage()
+        {
+            bool allGenresPresent = topSellersPage.AreGenresDisplayed("2D", "Puzzle", "Fantasy");
+            Assert.That(allGenresPresent, Is.True, "Not all genres (2D, Puzzle, Fantasy) are displayed on the page.");
+        }
+
+        [When(@"I apply OS")]
+        public void WhenIApplyOS()
+        {
+            topSellersPage.ClickLinuxCheckbox();
+        }
+
+        [When(@"I click on the first game")]
+        public void WhenIClickOnTheFirstGame()
+        {
+            topSellersPage.ClickFirstGame();
         }
     }
 }
