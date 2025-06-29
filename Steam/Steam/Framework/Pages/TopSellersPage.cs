@@ -84,7 +84,7 @@ namespace Steam.Framework.Pages
                 throw new NoSuchElementException("Linux checkbox is not displayed on the page");
             }
             linuxCheckbox.Click();
-            Thread.Sleep(1000); // Wait for the page to update after clicking the checkbox
+            Thread.Sleep(1000); // Wait for the page to update after clicking the last checkbox
         }
 
         public string GetFirstGameName() => FirstGameName.Text;

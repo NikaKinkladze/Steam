@@ -21,7 +21,7 @@ namespace Steam.Framework.Hooks
         [AfterScenario]
         public void teardown()
         {
-            //browser.Quit();
+            browser.Quit();
         }
     }
 }

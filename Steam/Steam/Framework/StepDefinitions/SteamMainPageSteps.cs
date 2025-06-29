@@ -27,5 +27,10 @@ namespace Steam.Framework.StepDefinitions
         {
             steamMainPage.ClickTopSellersLink();
         }
+        [When(@"I open the community marketplace")]
+        public void WhenIOpenTheCommunityMarketPage()
+        {
+            steamMainPage.ClickMarketButton();
+        }
     }
 }

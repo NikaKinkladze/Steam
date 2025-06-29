@@ -18,7 +18,6 @@ namespace Steam.Framework.Pages
 
         public string GetReleaseDate()
         {
-            // Some processing might be needed to match the format from list view
             string fullDateText = ReleaseDateLabel.Text;
             return fullDateText.Replace("Release Date: ", "").Trim();
         }
