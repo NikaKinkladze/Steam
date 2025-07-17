@@ -3,8 +3,6 @@ using Aquality.Selenium.Elements.Interfaces;
 using Aquality.Selenium.Forms;
 using ExampleProject.Framework;
 using OpenQA.Selenium;
-using SeleniumExtras.WaitHelpers;
-using OpenQA.Selenium.Support.UI;
 
 namespace Steam.Framework.Pages
 {

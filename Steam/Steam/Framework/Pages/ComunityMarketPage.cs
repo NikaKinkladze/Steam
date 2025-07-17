@@ -1,8 +1,8 @@
-﻿    using Aquality.Selenium.Browsers;
-    using Aquality.Selenium.Elements.Interfaces;
-    using Aquality.Selenium.Forms;
-    using ExampleProject.Framework;
-    using OpenQA.Selenium;
+﻿using Aquality.Selenium.Browsers;
+using Aquality.Selenium.Elements.Interfaces;
+using Aquality.Selenium.Forms;
+using ExampleProject.Framework;
+using OpenQA.Selenium;
 
 namespace Steam.Framework.Pages
 {
@@ -17,13 +17,15 @@ namespace Steam.Framework.Pages
         private IComboBox heroComboBox => ElementFactory.GetComboBox(By.Name("category_570_Hero[]"), "Hero Dropdown");
         private IButton immortalRarityBtn => ElementFactory.GetButton(By.Id("tag_570_Rarity_Rarity_Immortal"), "Immortal Rarity Button");
         private ITextBox searchInAdvancedOptions => ElementFactory.GetTextBox(By.Id("advancedSearchBox"), "Search in Advanced Options");
-        private IButton SearchButton => ElementFactory.GetButton(By.XPath("//div[@class='market_advancedsearch_bottombuttons']//div[contains(@onclick,'market_advanced_search')]"), "Search Button");
+        private IButton SearchButton => ElementFactory.GetButton(By.XPath("//div[@class='market_advancedsearch_bottombuttons']//div[contains(@onclick,'market_advanced_search')]"),
+            "Search Button");
         private IElement filterContainer => ElementFactory.GetLabel(By.CssSelector(".market_search_results_header"), "Filter Container");
         private ILabel FirstItemName => ElementFactory.GetLabel(By.Id("result_0_name"), "First Item Name");
         private ILabel FirstItemQuantity => ElementFactory.GetLabel(By.CssSelector("#result_0 .market_listing_num_listings_qty"), "First Item Quantity");
         private ILabel FirstItemPrice => ElementFactory.GetLabel(By.CssSelector("#result_0 .normal_price[data-price]"), "First Item Price");
         private ILabel RemoveLifestealer => ElementFactory.GetLabel(By.XPath("//a[contains(text(), 'Lifestealer')]/span[contains(@class, 'removeIcon')]"), "Remove Icon");
-        private IElement RemoveGoldenFilter => ElementFactory.GetLabel(By.XPath("//a[contains(., '\"golden\"') or contains(text(), 'golden')]/span[contains(@class, 'removeIcon')]"), "Remove Golden");
+        private IElement RemoveGoldenFilter => ElementFactory.GetLabel(By.XPath("//a[contains(., '\"golden\"') or contains(text(), 'golden')]/span[contains(@class, 'removeIcon')]"),
+            "Remove Golden");
         public CommunityMarketPage() : base(By.XPath(string.Format(LocatorConstants.PreciseTextLocator, PageName)), PageName)
         {
         }

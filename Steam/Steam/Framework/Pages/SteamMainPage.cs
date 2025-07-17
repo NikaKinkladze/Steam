@@ -13,6 +13,7 @@ namespace Steam.Framework.Pages
         private ILink TopSellersLink => ElementFactory.GetLink(By.XPath("//a[contains(@href, 'topsellers') and contains(text(), 'Top Sellers')]"), "Top Sellers");
         private ILabel CommunityMenu => ElementFactory.GetLabel(By.XPath("//a[contains(@class, 'supernav') and normalize-space(text())='COMMUNITY']"), "Community menu");
         private IButton MarketButton => ElementFactory.GetButton(By.XPath("//a[contains(@href, '/market') and normalize-space(text())='Market']"), "Community Market Button");
+        private ITextBox SearchField => ElementFactory.GetTextBox(By.XPath("//input[@id='store_nav_search_term']"), "Search Field");
 
         public SteamMainPage() : base(By.XPath(string.Format(LocatorConstants.PreciseTextLocator, PageName)), PageName)
         {
@@ -36,6 +37,12 @@ namespace Steam.Framework.Pages
             CommunityMenu.MouseActions.MoveToElement();
             AqualityServices.ConditionalWait.WaitFor(() => MarketButton.State.IsDisplayed);
             MarketButton.Click();
+        }
+
+        public void SearchForGame(string gameName)
+        {
+            SearchField.ClearAndType(gameName);
+            SearchField.SendKeys(Keys.Enter);
         }
     }
 }

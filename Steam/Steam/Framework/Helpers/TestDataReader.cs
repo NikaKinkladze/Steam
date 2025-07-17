@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Steam.Framework.Models;
 
 namespace Steam.Framework.Utils
 {
@@ -6,11 +7,15 @@ namespace Steam.Framework.Utils
     {
         private static readonly string testDataPath = Path.Combine(AppContext.BaseDirectory, "Resources", "testdata.json");
 
+        private static FullTestData LoadData()
+        {
+            var json = File.ReadAllText(testDataPath);
+            return JsonConvert.DeserializeObject<FullTestData>(json);
+        }
+
         public static List<string> GetLanguages()
         {
-            var jsonData = File.ReadAllText(testDataPath);
-            var jsonObject = JsonConvert.DeserializeObject<Dictionary<string, List<string>>>(jsonData);
-            return jsonObject["Languages"];
+            return LoadData().Languages;
         }
     }
 }

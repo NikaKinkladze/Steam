@@ -32,5 +32,10 @@ namespace Steam.Framework.StepDefinitions
         {
             steamMainPage.ClickMarketButton();
         }
+        [When(@"I search for ""(.*)""")]
+        public void WhenISearchFor(string gameName)
+        {
+            steamMainPage.SearchForGame(gameName);
+        }
     }
 }
